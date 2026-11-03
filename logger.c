@@ -39,7 +39,13 @@ void append_log(const char *message)
     fd = open(LOG_PATH, O_WRONLY | O_CREAT | O_APPEND, S_IRUSR | S_IWUSR);
     if (fd >= 0) {
         (void)fchmod(fd, S_IRUSR | S_IWUSR);
-        (void)write(fd, line, (size_t)length);
+       // (void)write(fd, line, (size_t)length);
+        ssize_t bytes_written = write(fd, line, (size_t)length);
+       if (bytes_written != (ssize_t)length)
+       {
+          close(fd);
+          return;
+       }
         (void)close(fd);
     }
 }
